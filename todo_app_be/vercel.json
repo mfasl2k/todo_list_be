@@ -4,16 +4,24 @@
     {
       "src": "todo_app_be/wsgi.py",
       "use": "@vercel/python",
-      "config": { "installCommand": "pip install -r requirements.txt" }
+      "config": {
+        "maxLambdaSize": "15mb",
+        "includeFiles": ["todo_app_be/**", "requirements.txt", ".env"]
+      }
     }
   ],
   "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "todo_app_be/wsgi.py"
     }
   ],
   "env": {
-    "DJANGO_SETTINGS_MODULE": "todo_app_be.settings.production"
+    "DJANGO_SETTINGS_MODULE": "todo_app_be.settings.production",
+    "PYTHONPATH": "/var/task"
   }
 }

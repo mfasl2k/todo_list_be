@@ -1,15 +1,15 @@
 {
   "version": 2,
-   "builds": [
+  "builds": [
     {
-      "src": "index.py",
+      "src": "todo_app_be/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "index.py"
+      "dest": "todo_app_be/wsgi.py"
     }
   ],
   "env": {

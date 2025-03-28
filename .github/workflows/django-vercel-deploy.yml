@@ -1,0 +1,79 @@
+name: Django Todo App CI/CD with Vercel
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Tests
+      run: |
+        python manage.py test
+      env:
+        SECRET_KEY: 'github-actions-test-key'
+        DEBUG: 'True'
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create production settings directory
+      run: |
+        mkdir -p todo_app_be/settings
+
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "DEBUG=False" >> .env
+
+    - name: Run Django Migrations
+      run: |
+        python manage.py migrate --settings=todo_app_be.settings.production
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DEBUG: 'False'
+
+    - name: Install Vercel CLI
+      run: npm install --global vercel@latest
+
+    - name: Deploy to Vercel
+      run: |
+        vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

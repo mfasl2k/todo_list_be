@@ -1,0 +1,1 @@
+from todo_app_be.wsgi import app

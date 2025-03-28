@@ -3,7 +3,7 @@ import dj_database_url
 from pathlib import Path
 
 # Import all settings from base settings
-from base import *
+from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)

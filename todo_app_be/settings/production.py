@@ -38,10 +38,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # CORS settings - if you need them
 CORS_ALLOW_ALL_ORIGINS = True
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '127.0.0.1', 'todo-list-rbbcsrlx4-mfasl2ks-projects.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '127.0.0.1', 'https://todo-list-be-three.vercel.app']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://todo-list-rbbcsrlx4-mfasl2ks-projects.vercel.app',
+    'https://todo-list-be-three.vercel.app',
     'https://*.vercel.app',
 ]
 # Configure logging

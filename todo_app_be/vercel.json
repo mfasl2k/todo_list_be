@@ -5,7 +5,9 @@
       "src": "todo_app_be/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb"
+        "maxLambdaSize": "15mb",
+        "pythonVersion": "3.9",
+        "runtime":  "python3.9"
       }
     }
   ],

@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from django.contrib.auth import authenticate
 
 from .serializers import TaskSerializer, UserRegistrationSerializer, UserLoginSerializer
@@ -46,6 +47,35 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['patch'])
+    def update_status(self, request, pk=None):
+        task = self.get_object()
+
+        # Get the new status from request data
+        new_status = request.data.get('status')
+
+        # Validate the status value
+        valid_statuses = [status[0] for status in Task.STATUS_CHOICES]
+        if new_status not in valid_statuses:
+            return Response(
+                {'error': f'Invalid status. Choose from {valid_statuses}'}
+            )
+
+        # Update the status
+        task.status = new_status
+
+        # Auto-update completed field if status is 'completed'
+        if new_status == 'completed':
+            task.completed = True
+        elif new_status == 'pending' or new_status == 'in_progress':
+            task.completed = False
+
+        task.save()
+
+        # Return the updated task
+        serializer = self.get_serializer(task)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):

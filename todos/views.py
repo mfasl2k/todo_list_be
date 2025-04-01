@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate
@@ -178,3 +178,28 @@ class UserLogoutView(APIView):
                 {'error': 'Unable to logout'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class CurrentUserView(APIView):
+    """
+    API endpoint to retrieve current user information
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Handle retrieving current user details
+        """
+        user = request.user
+
+        # Prepare response data
+        response_data = {
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                # Add any additional user fields you want to expose
+            }
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)

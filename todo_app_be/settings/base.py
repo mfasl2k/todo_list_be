@@ -142,7 +142,9 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://127.0.0.1:3000",
-    "https://todo-list-be-three.vercel.app"
+    "https://todo-list-be-three.vercel.app",
+    "http://localhost:5173",
+    "https://todo-list-fe-six.vercel.app",
 ]
 
 # Optional: More granular CORS settings
